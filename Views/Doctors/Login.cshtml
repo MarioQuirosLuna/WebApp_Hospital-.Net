@@ -1,0 +1,36 @@
+﻿@model WebApp_Hospital.Models.Doctor
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="row col-12">
+    <div class="container justify-content-center text-center">
+        <div class="col-md-5 m-auto">
+            <h1>Login</h1>
+            <form asp-action="Verify" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Doctor_identification_card" class="col-form-label">Identify Card Number</label>
+                    <input asp-for="Doctor_identification_card" type="text" id="Doctor_identification_card" class="form-control" required />
+                    <span asp-validation-for="Doctor_identification_card" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Doctor_code" class="col-form-label">Doctor Number</label>
+                    <input asp-for="Doctor_code" type="text" id="numberDoctor" class="form-control" required />
+                    <span asp-validation-for="Doctor_code" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Doctor_password" class="col-form-label">Password</label>
+                    <input asp-for="Doctor_password" type="password" id="passwordDoctor" class="form-control" required />
+                    <span asp-validation-for="Doctor_password" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" id="logIn" name="logIn" value="Log In" class="btn btn-primary" />
+                </div>
+                <div>
+                    <span id="result" class="text-danger"></span>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

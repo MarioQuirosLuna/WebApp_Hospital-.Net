@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebApp_Hospital
 {
@@ -24,6 +25,14 @@ namespace WebApp_Hospital
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            //configuracion del session
+            services.AddSession(
+                    options =>
+                    {
+                        options.IdleTimeout = TimeSpan.FromMinutes(15);
+                    }
+                );
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -42,6 +51,8 @@ namespace WebApp_Hospital
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
+            app.UseSession();
+
             app.UseRouting();
 
             app.UseAuthorization();
@@ -50,7 +61,7 @@ namespace WebApp_Hospital
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Doctors}/{action=Login}/{id?}");
             });
         }
     }
