@@ -22,7 +22,7 @@ namespace WebApp_Hospital.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            List<Appointment> productos = new List<Appointment>();
+            List<Appointment> appointments = new List<Appointment>();
 
             if (ModelState.IsValid)
             {
@@ -47,14 +47,14 @@ namespace WebApp_Hospital.Controllers
                             string Speciality = dataReader["speciality"].ToString();
                             string Diagnosis = dataReader["diagnosis_description"].ToString();
 
-                            productos.Add(new Appointment(Id, PatientIdentification, Patiend_name, DoctorIdentification, Doctor_name, Clinic_name, Date, Speciality, Diagnosis));
+                            appointments.Add(new Appointment(Id, PatientIdentification, Patiend_name, DoctorIdentification, Doctor_name, Clinic_name, Date, Speciality, Diagnosis));
                         }//while
                         connection.Close();
                     }
                 }
             }
 
-            return View(productos);
+            return View(appointments);
         }
 
         [HttpGet]
@@ -170,6 +170,7 @@ namespace WebApp_Hospital.Controllers
         }
 
         [HttpPut]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Appointment appointment) 
         {
@@ -178,7 +179,7 @@ namespace WebApp_Hospital.Controllers
                 string connectionString = Configuration["ConnectionStrings:DB_Connection"];
                 var connection = new SqlConnection(connectionString);
 
-                string sqlQuery = $"exec addAppointment";
+                string sqlQuery = $"exec updateDiagnostic @appointment='{appointment.Id}', @description='{appointment.Diagnosis}'";
                 using (SqlCommand command = new SqlCommand(sqlQuery, connection))
                 {
                     command.CommandType = CommandType.Text;
@@ -232,6 +233,7 @@ namespace WebApp_Hospital.Controllers
         }
 
         [HttpDelete]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(Appointment appointment) 
         {
@@ -240,7 +242,7 @@ namespace WebApp_Hospital.Controllers
                 string connectionString = Configuration["ConnectionStrings:DB_Connection"];
                 var connection = new SqlConnection(connectionString);
 
-                string sqlQuery = $"exec addAppointment";
+                string sqlQuery = $"exec deleteAppointment @appointment='{appointment.Id}'";
                 using (SqlCommand command = new SqlCommand(sqlQuery, connection))
                 {
                     command.CommandType = CommandType.Text;
