@@ -48,21 +48,26 @@ namespace WebApp_Hospital.Controllers
                         {
                             
                             HttpContext.Session.SetString("name", doctorReader["doctor_name"].ToString());
-                            String name = HttpContext.Session.GetString("name");
+
                             connection.Close();
-                            return View("Index",name);
-                        }
-                        else 
-                        {
-                            connection.Close();
-                            return View("Login");
-                        }
-                        
+                            return RedirectToAction("ShowDashBoard");
+                        }                       
                     }
+                    connection.Close();
                 }
             }
             return View("Login");
             
+        }
+
+        public ActionResult ShowDashBoard() 
+        {
+            if (HttpContext.Session.GetString("name") != null) 
+            {
+                return View("Index", HttpContext.Session.GetString("name"));
+            }else{
+                return RedirectToAction("Login");
+            }
         }
     }
 }
