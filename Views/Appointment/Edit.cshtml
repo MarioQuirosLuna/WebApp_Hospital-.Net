@@ -51,11 +51,12 @@
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
+            <span>@ViewBag.Mensaje</span>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-controller="Patient" asp-action="Index">Back to List</a>
 </div>
 

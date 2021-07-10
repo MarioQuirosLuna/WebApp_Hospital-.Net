@@ -20,7 +20,7 @@ namespace WebApp_Hospital.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? id)
         {
             List<Appointment> appointments = new List<Appointment>();
 
@@ -29,7 +29,7 @@ namespace WebApp_Hospital.Controllers
                 string connectionString = Configuration["ConnectionStrings:DB_Connection"];
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    string sqlQuery = $"exec getAppointments";
+                    string sqlQuery = $"exec getAppointmentByPatientId @id ='{id}'";
                     using (SqlCommand command = new SqlCommand(sqlQuery, connection))
                     {
                         command.CommandType = CommandType.Text;
@@ -40,7 +40,7 @@ namespace WebApp_Hospital.Controllers
                             int Id = Int32.Parse(dataReader["id"].ToString());
                             int PatientIdentification = Int32.Parse(dataReader["fk_patient_identification_card"].ToString());
                             string Patiend_name = dataReader["patient_name"].ToString(); 
-                            int DoctorIdentification = Int32.Parse(dataReader["fk_doctor_identification_card"].ToString());
+                            int DoctorIdentification = Int32.Parse(dataReader["doctor_code"].ToString());
                             string Doctor_name = dataReader["doctor_name"].ToString();
                             string Clinic_name = dataReader["clinic_name"].ToString();
                             DateTime Date = (DateTime)dataReader["date_time"];
@@ -53,6 +53,8 @@ namespace WebApp_Hospital.Controllers
                     }
                 }
             }
+
+            ViewBag.IdPatient = id;
 
             return View(appointments);
         }
@@ -81,7 +83,7 @@ namespace WebApp_Hospital.Controllers
                             int Id = Int32.Parse(dataReader["id"].ToString());
                             int PatientIdentification = Int32.Parse(dataReader["fk_patient_identification_card"].ToString());
                             string Patiend_name = dataReader["patient_name"].ToString();
-                            int DoctorIdentification = Int32.Parse(dataReader["fk_doctor_identification_card"].ToString());
+                            int DoctorIdentification = Int32.Parse(dataReader["doctor_code"].ToString());
                             string Doctor_name = dataReader["doctor_name"].ToString();
                             string Clinic_name = dataReader["clinic_name"].ToString();
                             DateTime Date = (DateTime)dataReader["date_time"];
@@ -99,34 +101,65 @@ namespace WebApp_Hospital.Controllers
         }
 
         // GET: Appointments/Create
-        public IActionResult Create()
+        [HttpGet]
+        public async Task<IActionResult> Create(int? id)
         {
-            return View();
+
+            //TODO: Validate not found
+
+            Appointment temp = null;
+
+            if (ModelState.IsValid)
+            {
+                string connectionString = Configuration["ConnectionStrings:DB_Connection"];
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    string sqlQuery = $"exec getPatientById @id='{id}'";
+                    using (SqlCommand command = new SqlCommand(sqlQuery, connection))
+                    {
+                        command.CommandType = CommandType.Text;
+                        connection.Open();
+                        SqlDataReader dataReader = await command.ExecuteReaderAsync();
+                        while (dataReader.Read())
+                        {
+                            int PatientIdentification = Int32.Parse(dataReader["patient_identification_card"].ToString());
+                            string Patiend_name = dataReader["patient_name"].ToString();
+
+                            temp = new Appointment(PatientIdentification, Patiend_name);
+                        }//while
+                        connection.Close();
+                    }
+                }
+            }
+
+            return View(temp);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Appointment appointment)
         {
+            string dateCreate="";
             if (ModelState.IsValid)
             {
                 string connectionString = Configuration["ConnectionStrings:DB_Connection"];
                 var connection = new SqlConnection(connectionString);
 
-                string dateCreate = appointment.Year+"-"+appointment.Month+"-"+appointment.Day+" "+appointment.Hour+":00:00";
+                dateCreate = appointment.Year+"-"+appointment.Day+"-"+appointment.Month+ " "+appointment.Hour+":00:00";
 
-                string sqlQuery = $"exec addAppointment @patient={appointment.Fk_patient_identification_card}, @doctor={appointment.Fk_doctor_identification_card}, @clinic='{appointment.Clinic_name}', @speciality='{appointment.Speciality}', @date='{dateCreate}'";
+                string sqlQuery = $"exec addAppointment @patient={appointment.Fk_patient_identification_card}, @doctor={appointment.Doctor_code}, @clinic='{appointment.Clinic_name}', @speciality='{appointment.Speciality}', @date='{dateCreate}'";
                 using (SqlCommand command = new SqlCommand(sqlQuery, connection))
                 {
                     command.CommandType = CommandType.Text;
                     connection.Open();
                     await command.ExecuteReaderAsync();
                     connection.Close();
-                    return RedirectToAction("Index");
                 }
             }
 
-            return View(appointment);
+            ViewBag.Mensaje = "Successful";
+
+            return View();
         }
 
         [HttpGet]
@@ -152,7 +185,7 @@ namespace WebApp_Hospital.Controllers
                             int Id = Int32.Parse(dataReader["id"].ToString());
                             int PatientIdentification = Int32.Parse(dataReader["fk_patient_identification_card"].ToString());
                             string Patiend_name = dataReader["patient_name"].ToString();
-                            int DoctorIdentification = Int32.Parse(dataReader["fk_doctor_identification_card"].ToString());
+                            int DoctorIdentification = Int32.Parse(dataReader["doctor_code"].ToString());
                             string Doctor_name = dataReader["doctor_name"].ToString();
                             string Clinic_name = dataReader["clinic_name"].ToString();
                             DateTime Date = (DateTime)dataReader["date_time"];
@@ -169,7 +202,7 @@ namespace WebApp_Hospital.Controllers
             return View(temp);
         }
 
-        [HttpPut]
+        //[HttpPut]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Appointment appointment) 
@@ -186,9 +219,10 @@ namespace WebApp_Hospital.Controllers
                     connection.Open();
                     await command.ExecuteReaderAsync();
                     connection.Close();
-                    return RedirectToAction("Index");
                 }
             }
+
+            ViewBag.Mensaje = "Successful";
 
             return View(appointment);
         }
@@ -215,7 +249,7 @@ namespace WebApp_Hospital.Controllers
                             int Id = Int32.Parse(dataReader["id"].ToString());
                             int PatientIdentification = Int32.Parse(dataReader["fk_patient_identification_card"].ToString());
                             string Patiend_name = dataReader["patient_name"].ToString();
-                            int DoctorIdentification = Int32.Parse(dataReader["fk_doctor_identification_card"].ToString());
+                            int DoctorIdentification = Int32.Parse(dataReader["doctor_code"].ToString());
                             string Doctor_name = dataReader["doctor_name"].ToString();
                             string Clinic_name = dataReader["clinic_name"].ToString();
                             DateTime Date = (DateTime)dataReader["date_time"];
@@ -232,7 +266,7 @@ namespace WebApp_Hospital.Controllers
             return View(temp);
         }
 
-        [HttpDelete]
+        //[HttpDelete]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(Appointment appointment) 
@@ -249,11 +283,12 @@ namespace WebApp_Hospital.Controllers
                     connection.Open();
                     await command.ExecuteReaderAsync();
                     connection.Close();
-                    return RedirectToAction("Index");
                 }
             }
 
-            return View(appointment);
+            ViewBag.Mensaje = "Successful";
+
+            return View();
         }
     }
 }

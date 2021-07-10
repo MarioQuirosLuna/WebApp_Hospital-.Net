@@ -18,7 +18,7 @@
             <th>Patient Name</th> <td>@Html.DisplayFor(model => model.Patient_name)</td>
         </tr>
         <tr>
-            <th>Doctor Identification</th> <td>@Html.DisplayFor(model => model.Fk_doctor_identification_card)</td>
+            <th>Doctor Identification</th> <td>@Html.DisplayFor(model => model.Doctor_code)</td>
         </tr>
         <tr>
             <th>Doctor Name</th> <td>@Html.DisplayFor(model => model.Doctor_name)</td>
@@ -40,5 +40,5 @@
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-controller="Patient" asp-action="Index">Back to List</a>
 </div>

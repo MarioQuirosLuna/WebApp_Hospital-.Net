@@ -13,40 +13,115 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Fk_patient_identification_card" class="control-label"></label>
-                <input asp-for="Fk_patient_identification_card" class="form-control" />
+                <label asp-for="Fk_patient_identification_card" class="control-label">Patient Identification</label>
+                <input asp-for="Fk_patient_identification_card" class="form-control" readonly />
                 <span asp-validation-for="Fk_patient_identification_card" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Fk_doctor_identification_card" class="control-label"></label>
-                <input asp-for="Fk_doctor_identification_card" class="form-control" />
-                <span asp-validation-for="Fk_doctor_identification_card" class="text-danger"></span>
+                <label asp-for="Patient_name" class="control-label">Patient Name</label>
+                <input asp-for="Patient_name" class="form-control" readonly />
+                <span asp-validation-for="Patient_name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Clinic_name" class="control-label"></label>
+                <label asp-for="Doctor_code" class="control-label">Doctor Code</label>
+                <input asp-for="Doctor_code" class="form-control" value="" />
+                <span asp-validation-for="Doctor_code" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Clinic_name" class="control-label">Clinic Name</label>
                 <input asp-for="Clinic_name" class="form-control" />
                 <span asp-validation-for="Clinic_name" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Year" class="control-label"></label>
-                <input asp-for="Year" class="form-control" />
+                <select class="form-control" asp-for="Year">
+                    <option>2021</option>
+                    <option>2022</option>
+                    <option>2023</option>
+                    <option>2024</option>
+                    <option>2025</option>
+                    <option>2026</option>
+                </select>
                 <span asp-validation-for="Year" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Month" class="control-label"></label>
-                <input asp-for="Month" class="form-control" />
+                <select class="form-control" asp-for="Month">
+                    <option>01</option>
+                    <option>02</option>
+                    <option>03</option>
+                    <option>04</option>
+                    <option>05</option>
+                    <option>06</option>
+                    <option>07</option>
+                    <option>08</option>
+                    <option>09</option>
+                    <option>10</option>
+                    <option>11</option>
+                    <option>12</option>
+                </select>
                 <span asp-validation-for="Month" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Day" class="control-label"></label>
-                <input asp-for="Day" class="form-control" />
+                <select class="form-control" asp-for="Day">
+                    <option>01</option>
+                    <option>02</option>
+                    <option>03</option>
+                    <option>04</option>
+                    <option>05</option>
+                    <option>06</option>
+                    <option>07</option>
+                    <option>08</option>
+                    <option>09</option>
+                    <option>10</option>
+                    <option>11</option>
+                    <option>12</option>
+                    <option>13</option>
+                    <option>14</option>
+                    <option>15</option>
+                    <option>16</option>
+                    <option>17</option>
+                    <option>18</option>
+                    <option>19</option>
+                    <option>20</option>
+                    <option>21</option>
+                    <option>22</option>
+                    <option>23</option>
+                    <option>24</option>
+                    <option>25</option>
+                    <option>26</option>
+                    <option>27</option>
+                    <option>28</option>
+                    <option>29</option>
+                    <option>30</option>
+                    <option>31</option>
+                </select>
                 <span asp-validation-for="Day" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Hour" class="control-label"></label>
-                <input asp-for="Hour" class="form-control" />
+                <select class="form-control" asp-for="Hour">
+                    <option>06</option>
+                    <option>07</option>
+                    <option>08</option>
+                    <option>09</option>
+                    <option>10</option>
+                    <option>11</option>
+                    <option>12</option>
+                    <option>01</option>
+                    <option>02</option>
+                    <option>03</option>
+                    <option>04</option>
+                    <option>05</option>
+                </select>
                 <span asp-validation-for="Hour" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Speciality" class="control-label"></label>
                 <input asp-for="Speciality" class="form-control" />
@@ -55,11 +130,12 @@
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
+            <span>@ViewBag.Mensaje</span>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-controller="Patient" asp-action="Index">Back to List</a>
 </div>
 
