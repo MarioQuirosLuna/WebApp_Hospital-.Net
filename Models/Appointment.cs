@@ -22,8 +22,7 @@ namespace WebApp_Hospital.Models
         public string Month { get; set; }
         public string Day { get; set; }
         public string Hour { get; set; }
-        public string Minutes { get; set; }
-        public string Seconds { get; set; }
+
         [Required(ErrorMessage = "Speciality name required.")]
         public string Speciality { get; set; }
         public string Diagnosis { get; set; }
