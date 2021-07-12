@@ -22,12 +22,12 @@ namespace WebApp_Hospital.Controllers
         public async Task<IActionResult> Index(int? id)
         {
             List<Vaccine> vaccines = new List<Vaccine>();
-
             if (ModelState.IsValid)
             {
                 string connectionString = Configuration["ConnectionStrings:DB_Connection"];
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
+                   
                     string sqlQuery = $"exec getVaccineByPatientId @id ='{id}'";
                     using (SqlCommand command = new SqlCommand(sqlQuery, connection))
                     {
@@ -98,5 +98,70 @@ namespace WebApp_Hospital.Controllers
             return View(temp);
         }
 
+        // GET: Vaccine/Create
+        [HttpGet]
+        public async Task<IActionResult> Create(int? id)
+        {
+
+            //TODO: Validate not found
+
+            Vaccine temp = null;
+
+            if (ModelState.IsValid)
+            {
+                string connectionString = Configuration["ConnectionStrings:DB_Connection"];
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    string sqlQuery = $"exec API_getPatientByIdentification @identification='{id}'";
+                    using (SqlCommand command = new SqlCommand(sqlQuery, connection))
+                    {
+                        command.CommandType = CommandType.Text;
+                        connection.Open();
+                        SqlDataReader dataReader = await command.ExecuteReaderAsync();
+                        while (dataReader.Read())
+                        {
+                            int PatientIdentification = Int32.Parse(dataReader["patient_identification_card"].ToString());
+                            string Patiend_name = dataReader["patient_name"].ToString();
+
+                            temp = new Vaccine(PatientIdentification, Patiend_name);
+                        }//while
+                        connection.Close();
+                    }
+                }
+            }
+
+            return View(temp);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(Vaccine vaccine)
+        {
+            string dateCreate = "";
+            string nextdateCreate = "";
+            if (ModelState.IsValid)
+            {
+                string connectionString = Configuration["ConnectionStrings:DB_Connection"];
+                var connection = new SqlConnection(connectionString);
+
+                dateCreate = vaccine.Year + "-" + vaccine.Day + "-" + vaccine.Month + " 00:00:01";
+                nextdateCreate = vaccine.NextYear + "-" + vaccine.NextDay + "-" + vaccine.NextMonth + " 00:00:01";
+
+                string sqlQuery = $"exec addPatientVaccine @patient={vaccine.Fk_patient_identification_card}, @vaccine='{vaccine.Vaccine_name}', @date_time='{dateCreate}', @next_dose_date='{nextdateCreate}', @clinic='{vaccine.Clinic_name}'";
+                using (SqlCommand command = new SqlCommand(sqlQuery, connection))
+                {
+                    command.CommandType = CommandType.Text;
+                    connection.Open();
+                    await command.ExecuteReaderAsync();
+                    connection.Close();
+                }
+            }
+
+            ViewBag.Mensaje = "Successful";
+
+            return View();
+        }
+
     }
+
 }
