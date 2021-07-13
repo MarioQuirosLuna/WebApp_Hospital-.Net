@@ -159,7 +159,138 @@ namespace WebApp_Hospital.Controllers
 
             ViewBag.Mensaje = "Successful";
 
-            return View();
+            return RedirectToAction("Index", new { id = vaccine.Fk_patient_identification_card });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(int? id)
+        {
+            //TODO: Validate not found
+
+            Vaccine temp = null;
+
+            if (ModelState.IsValid)
+            {
+                string connectionString = Configuration["ConnectionStrings:DB_Connection"];
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    string sqlQuery = $"exec getVaccineById @id='{id}'";
+                    using (SqlCommand command = new SqlCommand(sqlQuery, connection))
+                    {
+                        command.CommandType = CommandType.Text;
+                        connection.Open();
+                        SqlDataReader dataReader = await command.ExecuteReaderAsync();
+                        while (dataReader.Read())
+                        {
+                            int Id = Int32.Parse(dataReader["id"].ToString());
+                            int PatientIdentification = Int32.Parse(dataReader["fk_patient_identification_card"].ToString());
+                            string Patiend_name = dataReader["patient_name"].ToString();
+                            string Vaccine_name = dataReader["vaccine_name"].ToString();
+                            string Vaccine_description = dataReader["vaccine_description"].ToString();
+                            DateTime Date = (DateTime)dataReader["date_time"];
+                            DateTime Next_dose_date_time = (DateTime)dataReader["next_dose_date_time"];
+                            string Clinic_name = dataReader["clinic_name"].ToString();
+
+                            temp = new Vaccine(Id, PatientIdentification, Patiend_name, Vaccine_name, Vaccine_description, Date, Next_dose_date_time, Clinic_name);
+                        }//while
+                        connection.Close();
+                    }
+                }
+            }
+
+            return View(temp);
+        }
+
+        //[HttpPut]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(Vaccine vaccine)
+        {
+            string dateCreate = "";
+            string nextdateCreate = "";
+            if (ModelState.IsValid)
+            {
+                string connectionString = Configuration["ConnectionStrings:DB_Connection"];
+                var connection = new SqlConnection(connectionString);
+
+                dateCreate = vaccine.Year + "-" + vaccine.Day + "-" + vaccine.Month + " 00:00:01";
+                nextdateCreate = vaccine.NextYear + "-" + vaccine.NextDay + "-" + vaccine.NextMonth + " 00:00:01";
+
+                string sqlQuery = $"exec updatePatientVaccine @id='{vaccine.Id}', @date_time='{dateCreate}', @next_dose_date='{nextdateCreate}', @clinic='{vaccine.Clinic_name}'";
+                using (SqlCommand command = new SqlCommand(sqlQuery, connection))
+                {
+                    command.CommandType = CommandType.Text;
+                    connection.Open();
+                    await command.ExecuteReaderAsync();
+                    connection.Close();
+                }
+            }
+
+            ViewBag.Mensaje = "Successful";
+            return RedirectToAction("Details", new { id= vaccine.Id});
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Delete(int? id)
+        {
+            //TODO: Validate not found
+            Vaccine temp = null;
+
+            if (ModelState.IsValid)
+            {
+                string connectionString = Configuration["ConnectionStrings:DB_Connection"];
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    string sqlQuery = $"exec getVaccineById @id='{id}'";
+                    using (SqlCommand command = new SqlCommand(sqlQuery, connection))
+                    {
+                        command.CommandType = CommandType.Text;
+                        connection.Open();
+                        SqlDataReader dataReader = await command.ExecuteReaderAsync();
+                        while (dataReader.Read())
+                        {
+                            int Id = Int32.Parse(dataReader["id"].ToString());
+                            int PatientIdentification = Int32.Parse(dataReader["fk_patient_identification_card"].ToString());
+                            string Patiend_name = dataReader["patient_name"].ToString();
+                            string Vaccine_name = dataReader["vaccine_name"].ToString();
+                            string Vaccine_description = dataReader["vaccine_description"].ToString();
+                            DateTime Date = (DateTime)dataReader["date_time"];
+                            DateTime Next_dose_date_time = (DateTime)dataReader["next_dose_date_time"];
+                            string Clinic_name = dataReader["clinic_name"].ToString();
+
+                            temp = new Vaccine(Id, PatientIdentification, Patiend_name, Vaccine_name, Vaccine_description, Date, Next_dose_date_time, Clinic_name);
+                        }//while
+                        connection.Close();
+                    }
+                }
+            }
+
+            return View(temp);
+        }
+
+        //[HttpDelete]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(Vaccine vaccine)
+        {
+            if (ModelState.IsValid)
+            {
+                string connectionString = Configuration["ConnectionStrings:DB_Connection"];
+                var connection = new SqlConnection(connectionString);
+
+                string sqlQuery = $"exec deletePatientVaccine @id='{vaccine.Id}'";
+                using (SqlCommand command = new SqlCommand(sqlQuery, connection))
+                {
+                    command.CommandType = CommandType.Text;
+                    connection.Open();
+                    await command.ExecuteReaderAsync();
+                    connection.Close();
+                }
+            }
+
+            ViewBag.Mensaje = "Successful";
+
+            return RedirectToAction("Index", new { id = vaccine.Fk_patient_identification_card });
         }
 
     }

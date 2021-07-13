@@ -1,17 +1,18 @@
 ﻿@model WebApp_Hospital.Models.Vaccine
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Edit";
 }
 
-<h1>Create</h1>
+<h1>Edit</h1>
 
 <h4>Vaccine</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <label asp-for="Fk_patient_identification_card" class="control-label">Patient Identification</label>
                 <input asp-for="Fk_patient_identification_card" class="form-control" readonly />
@@ -23,19 +24,20 @@
                 <span asp-validation-for="Patient_name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Vaccine_name" class="control-label"></label>
-                <select class="form-control" asp-for="Vaccine_name">
-                    <option>Viruela</option>
-                    <option>Varicela</option>
-                    <option>Fiebre Amarilla</option>
-                    <option>Rotavirus</option>
-                    <option>Influenza</option>
-                    <option>Polio</option>
-                    <option>Rabia</option>
-                </select>
+                <label asp-for="Vaccine_name" class="control-label">Vaccine Name</label>
+                <input asp-for="Vaccine_name" class="form-control" readonly />
                 <span asp-validation-for="Vaccine_name" class="text-danger"></span>
             </div>
-
+            <table class="table">
+                <tr>
+                    <th>Date</th>
+                    <td>@Html.DisplayFor(model => model.Date_time)</td>
+                </tr>
+                <tr>
+                    <th>Next Dose Date</th>
+                    <td>@Html.DisplayFor(model => model.Next_dose_date_time)</td>
+                </tr>
+            </table>
             <div class="form-group">
                 <label asp-for="Year" class="control-label"></label>
                 <select class="form-control" asp-for="Year">
@@ -182,7 +184,7 @@
                 <span asp-validation-for="Clinic_name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Save" class="btn btn-primary" />
             </div>
             <span>@ViewBag.Mensaje</span>
         </form>
@@ -192,4 +194,3 @@
 <div>
     <a asp-action="Index" asp-route-id="@Model.Fk_patient_identification_card">Back to List</a>
 </div>
-

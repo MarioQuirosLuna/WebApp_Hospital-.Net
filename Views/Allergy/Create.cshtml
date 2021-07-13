@@ -1,4 +1,4 @@
-﻿@model WebApp_Hospital.Models.Vaccine
+﻿@model WebApp_Hospital.Models.Allergy
 
 @{
     ViewData["Title"] = "Create";
@@ -6,7 +6,7 @@
 
 <h1>Create</h1>
 
-<h4>Vaccine</h4>
+<h4>Allergy</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -23,17 +23,17 @@
                 <span asp-validation-for="Patient_name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Vaccine_name" class="control-label"></label>
-                <select class="form-control" asp-for="Vaccine_name">
-                    <option>Viruela</option>
-                    <option>Varicela</option>
-                    <option>Fiebre Amarilla</option>
-                    <option>Rotavirus</option>
-                    <option>Influenza</option>
-                    <option>Polio</option>
-                    <option>Rabia</option>
+                <label asp-for="Allergy_name" class="control-label"></label>
+                <select class="form-control" asp-for="Allergy_name">
+                    <option>Alergia alimentaria</option>
+                    <option>Alergia a medicamentos</option>
+                    <option>Asma Alérgico</option>
+                    <option>Dermatitis atópica</option>
+                    <option>Poliposis nasal</option>
+                    <option>Rinitis alérgica</option>
+                    <option>Urticaria Crónica</option>
                 </select>
-                <span asp-validation-for="Vaccine_name" class="text-danger"></span>
+                <span asp-validation-for="Allergy_name" class="text-danger"></span>
             </div>
 
             <div class="form-group">
@@ -107,79 +107,9 @@
             </div>
 
             <div class="form-group">
-                <label asp-for="NextYear" class="control-label"></label>
-                <select class="form-control" asp-for="NextYear">
-                    <option>2021</option>
-                    <option>2022</option>
-                    <option>2023</option>
-                    <option>2024</option>
-                    <option>2025</option>
-                    <option>2026</option>
-                </select>
-                <span asp-validation-for="NextYear" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="NextMonth" class="control-label"></label>
-                <select class="form-control" asp-for="NextMonth">
-                    <option>01</option>
-                    <option>02</option>
-                    <option>03</option>
-                    <option>04</option>
-                    <option>05</option>
-                    <option>06</option>
-                    <option>07</option>
-                    <option>08</option>
-                    <option>09</option>
-                    <option>10</option>
-                    <option>11</option>
-                    <option>12</option>
-                </select>
-                <span asp-validation-for="NextMonth" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="NextDay" class="control-label"></label>
-                <select class="form-control" asp-for="NextDay">
-                    <option>01</option>
-                    <option>02</option>
-                    <option>03</option>
-                    <option>04</option>
-                    <option>05</option>
-                    <option>06</option>
-                    <option>07</option>
-                    <option>08</option>
-                    <option>09</option>
-                    <option>10</option>
-                    <option>11</option>
-                    <option>12</option>
-                    <option>13</option>
-                    <option>14</option>
-                    <option>15</option>
-                    <option>16</option>
-                    <option>17</option>
-                    <option>18</option>
-                    <option>19</option>
-                    <option>20</option>
-                    <option>21</option>
-                    <option>22</option>
-                    <option>23</option>
-                    <option>24</option>
-                    <option>25</option>
-                    <option>26</option>
-                    <option>27</option>
-                    <option>28</option>
-                    <option>29</option>
-                    <option>30</option>
-                    <option>31</option>
-                </select>
-                <span asp-validation-for="NextDay" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Clinic_name" class="control-label">Clinic Name</label>
-                <input asp-for="Clinic_name" class="form-control" />
-                <span asp-validation-for="Clinic_name" class="text-danger"></span>
+                <label asp-for="Medicine" class="control-label">Medicine</label>
+                <input asp-for="Medicine" class="form-control" />
+                <span asp-validation-for="Medicine" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -192,4 +122,5 @@
 <div>
     <a asp-action="Index" asp-route-id="@Model.Fk_patient_identification_card">Back to List</a>
 </div>
+
 

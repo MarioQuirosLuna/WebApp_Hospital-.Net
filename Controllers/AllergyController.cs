@@ -10,11 +10,11 @@ using WebApp_Hospital.Models;
 
 namespace WebApp_Hospital.Controllers
 {
-    public class AppointmentController : Controller
+    public class AllergyController : Controller
     {
         public IConfiguration Configuration { get; }
 
-        public AppointmentController(IConfiguration configuration)
+        public AllergyController(IConfiguration configuration)
         {
             Configuration = configuration;
         }
@@ -22,57 +22,14 @@ namespace WebApp_Hospital.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(int? id)
         {
-            List<Appointment> appointments = new List<Appointment>();
-
+            List<Allergy> allergies = new List<Allergy>();
             if (ModelState.IsValid)
             {
                 string connectionString = Configuration["ConnectionStrings:DB_Connection"];
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    string sqlQuery = $"exec getAppointmentByPatientId @id ='{id}'";
-                    using (SqlCommand command = new SqlCommand(sqlQuery, connection))
-                    {
-                        command.CommandType = CommandType.Text;
-                        connection.Open();
-                        SqlDataReader dataReader = await command.ExecuteReaderAsync();
-                        while (dataReader.Read())
-                        {
-                            int Id = Int32.Parse(dataReader["id"].ToString());
-                            int PatientIdentification = Int32.Parse(dataReader["fk_patient_identification_card"].ToString());
-                            string Patiend_name = dataReader["patient_name"].ToString(); 
-                            int DoctorIdentification = Int32.Parse(dataReader["doctor_code"].ToString());
-                            string Doctor_name = dataReader["doctor_name"].ToString();
-                            string Clinic_name = dataReader["clinic_name"].ToString();
-                            DateTime Date = (DateTime)dataReader["date_time"];
-                            string Speciality = dataReader["speciality"].ToString();
-                            string Diagnosis = dataReader["diagnosis_description"].ToString();
 
-                            appointments.Add(new Appointment(Id, PatientIdentification, Patiend_name, DoctorIdentification, Doctor_name, Clinic_name, Date, Speciality, Diagnosis));
-                        }//while
-                        connection.Close();
-                    }
-                }
-            }
-
-            ViewBag.IdPatient = id;
-
-            return View(appointments);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Details(int? id)
-        {
-
-            //TODO: Validate not found
-
-            Appointment temp = null;
-
-            if (ModelState.IsValid)
-            {
-                string connectionString = Configuration["ConnectionStrings:DB_Connection"];
-                using (SqlConnection connection = new SqlConnection(connectionString))
-                {
-                    string sqlQuery = $"exec getAppointmentById @id='{id}'";
+                    string sqlQuery = $"exec getAllergyByPatientIdentification @identification ='{id}'";
                     using (SqlCommand command = new SqlCommand(sqlQuery, connection))
                     {
                         command.CommandType = CommandType.Text;
@@ -83,14 +40,54 @@ namespace WebApp_Hospital.Controllers
                             int Id = Int32.Parse(dataReader["id"].ToString());
                             int PatientIdentification = Int32.Parse(dataReader["fk_patient_identification_card"].ToString());
                             string Patiend_name = dataReader["patient_name"].ToString();
-                            int DoctorIdentification = Int32.Parse(dataReader["doctor_code"].ToString());
-                            string Doctor_name = dataReader["doctor_name"].ToString();
-                            string Clinic_name = dataReader["clinic_name"].ToString();
-                            DateTime Date = (DateTime)dataReader["date_time"];
-                            string Speciality = dataReader["speciality"].ToString();
-                            string Diagnosis = dataReader["diagnosis_description"].ToString();
+                            string Allergy_name = dataReader["allergy_name"].ToString();
+                            string Allergy_description = dataReader["allergy_description"].ToString();
+                            DateTime Date = (DateTime)dataReader["diagnosis_date_time"];
+                            string Medicine = dataReader["medicine"].ToString();
 
-                            temp = new Appointment(Id, PatientIdentification, Patiend_name, DoctorIdentification, Doctor_name, Clinic_name, Date, Speciality, Diagnosis);
+                            allergies.Add(new Allergy(Id, PatientIdentification, Patiend_name, Allergy_name, Allergy_description, Date, Medicine));
+                        }//while
+                        connection.Close();
+                    }
+                }
+            }
+
+            ViewBag.IdPatient = id;
+
+            return View(allergies);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Details(int? id)
+        {
+
+            //TODO: Validate not found
+
+            Allergy temp = null;
+
+            if (ModelState.IsValid)
+            {
+                string connectionString = Configuration["ConnectionStrings:DB_Connection"];
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    string sqlQuery = $"exec getAllergyById @id='{id}'";
+                    using (SqlCommand command = new SqlCommand(sqlQuery, connection))
+                    {
+                        command.CommandType = CommandType.Text;
+                        connection.Open();
+                        SqlDataReader dataReader = await command.ExecuteReaderAsync();
+                        while (dataReader.Read())
+                        {
+                            int Id = Int32.Parse(dataReader["id"].ToString());
+                            int PatientIdentification = Int32.Parse(dataReader["fk_patient_identification_card"].ToString());
+                            string Patiend_name = dataReader["patient_name"].ToString();
+                            string Allergy_name = dataReader["allergy_name"].ToString();
+                            string Allergy_description = dataReader["allergy_description"].ToString();
+                            DateTime Date = (DateTime)dataReader["diagnosis_date_time"];
+                            string Medicine = dataReader["medicine"].ToString();
+
+                            temp = (new Allergy(Id, PatientIdentification, Patiend_name, Allergy_name, Allergy_description, Date, Medicine));
+
                         }//while
                         connection.Close();
                     }
@@ -100,21 +97,21 @@ namespace WebApp_Hospital.Controllers
             return View(temp);
         }
 
-        // GET: Appointments/Create
+        // GET: Vaccine/Create
         [HttpGet]
         public async Task<IActionResult> Create(int? id)
         {
 
             //TODO: Validate not found
 
-            Appointment temp = null;
+            Allergy temp = null;
 
             if (ModelState.IsValid)
             {
                 string connectionString = Configuration["ConnectionStrings:DB_Connection"];
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    string sqlQuery = $"exec getPatientById @id='{id}'";
+                    string sqlQuery = $"exec API_getPatientByIdentification @identification='{id}'";
                     using (SqlCommand command = new SqlCommand(sqlQuery, connection))
                     {
                         command.CommandType = CommandType.Text;
@@ -125,7 +122,7 @@ namespace WebApp_Hospital.Controllers
                             int PatientIdentification = Int32.Parse(dataReader["patient_identification_card"].ToString());
                             string Patiend_name = dataReader["patient_name"].ToString();
 
-                            temp = new Appointment(PatientIdentification, Patiend_name);
+                            temp = new Allergy(PatientIdentification, Patiend_name);
                         }//while
                         connection.Close();
                     }
@@ -137,17 +134,17 @@ namespace WebApp_Hospital.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Appointment appointment)
+        public async Task<IActionResult> Create(Allergy allergy)
         {
-            string dateCreate="";
+            string dateCreate = "";
             if (ModelState.IsValid)
             {
                 string connectionString = Configuration["ConnectionStrings:DB_Connection"];
                 var connection = new SqlConnection(connectionString);
 
-                dateCreate = appointment.Year+"-"+appointment.Day+"-"+appointment.Month+ " "+appointment.Hour+":00:00";
+                dateCreate = allergy.Year + "-" + allergy.Day + "-" + allergy.Month + " 00:00:01";
 
-                string sqlQuery = $"exec addAppointment @patient={appointment.Fk_patient_identification_card}, @doctor={appointment.Doctor_code}, @clinic='{appointment.Clinic_name}', @speciality='{appointment.Speciality}', @date='{dateCreate}'";
+                string sqlQuery = $"exec addPatientAllergy @patient={allergy.Fk_patient_identification_card}, @allergy='{allergy.Allergy_name}', @date_time='{dateCreate}', @medicine='{allergy.Medicine}'";
                 using (SqlCommand command = new SqlCommand(sqlQuery, connection))
                 {
                     command.CommandType = CommandType.Text;
@@ -159,22 +156,22 @@ namespace WebApp_Hospital.Controllers
 
             ViewBag.Mensaje = "Successful";
 
-            return RedirectToAction("Index", "Patient");
+            return RedirectToAction("Index", new { id = allergy.Fk_patient_identification_card });
         }
 
         [HttpGet]
-        public async Task<IActionResult> Edit(int? id) 
+        public async Task<IActionResult> Edit(int? id)
         {
             //TODO: Validate not found
 
-            Appointment temp = null;
+            Allergy temp = null;
 
             if (ModelState.IsValid)
             {
                 string connectionString = Configuration["ConnectionStrings:DB_Connection"];
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    string sqlQuery = $"exec getAppointmentById @id='{id}'";
+                    string sqlQuery = $"exec getAllergyById @id='{id}'";
                     using (SqlCommand command = new SqlCommand(sqlQuery, connection))
                     {
                         command.CommandType = CommandType.Text;
@@ -185,14 +182,12 @@ namespace WebApp_Hospital.Controllers
                             int Id = Int32.Parse(dataReader["id"].ToString());
                             int PatientIdentification = Int32.Parse(dataReader["fk_patient_identification_card"].ToString());
                             string Patiend_name = dataReader["patient_name"].ToString();
-                            int DoctorIdentification = Int32.Parse(dataReader["doctor_code"].ToString());
-                            string Doctor_name = dataReader["doctor_name"].ToString();
-                            string Clinic_name = dataReader["clinic_name"].ToString();
-                            DateTime Date = (DateTime)dataReader["date_time"];
-                            string Speciality = dataReader["speciality"].ToString();
-                            string Diagnosis = dataReader["diagnosis_description"].ToString();
+                            string Allergy_name = dataReader["allergy_name"].ToString();
+                            string Allergy_description = dataReader["allergy_description"].ToString();
+                            DateTime Date = (DateTime)dataReader["diagnosis_date_time"];
+                            string Medicine = dataReader["medicine"].ToString();
 
-                            temp = new Appointment(Id, PatientIdentification, Patiend_name, DoctorIdentification, Doctor_name, Clinic_name, Date, Speciality, Diagnosis);
+                            temp = new Allergy(Id, PatientIdentification, Patiend_name, Allergy_name, Allergy_description, Date, Medicine);
                         }//while
                         connection.Close();
                     }
@@ -205,14 +200,17 @@ namespace WebApp_Hospital.Controllers
         //[HttpPut]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Appointment appointment) 
+        public async Task<IActionResult> Edit(Allergy allergy)
         {
+            string dateCreate = "";
             if (ModelState.IsValid)
             {
                 string connectionString = Configuration["ConnectionStrings:DB_Connection"];
                 var connection = new SqlConnection(connectionString);
 
-                string sqlQuery = $"exec updateDiagnostic @appointment='{appointment.Id}', @description='{appointment.Diagnosis}'";
+                dateCreate = allergy.Year + "-" + allergy.Day + "-" + allergy.Month + " 00:00:01";
+
+                string sqlQuery = $"exec updatePatientAllergy @id='{allergy.Id}', @date_time='{dateCreate}', @medicine='{allergy.Medicine}'";
                 using (SqlCommand command = new SqlCommand(sqlQuery, connection))
                 {
                     command.CommandType = CommandType.Text;
@@ -223,22 +221,21 @@ namespace WebApp_Hospital.Controllers
             }
 
             ViewBag.Mensaje = "Successful";
-
-            return RedirectToAction("Index", "Patient");
+            return RedirectToAction("Details", new { id = allergy.Id });
         }
 
         [HttpGet]
-        public async Task<IActionResult> Delete(int? id) 
+        public async Task<IActionResult> Delete(int? id)
         {
             //TODO: Validate not found
-            Appointment temp = null;
+            Allergy temp = null;
 
             if (ModelState.IsValid)
             {
                 string connectionString = Configuration["ConnectionStrings:DB_Connection"];
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    string sqlQuery = $"exec getAppointmentById @id='{id}'";
+                    string sqlQuery = $"exec getAllergyById @id='{id}'";
                     using (SqlCommand command = new SqlCommand(sqlQuery, connection))
                     {
                         command.CommandType = CommandType.Text;
@@ -249,14 +246,12 @@ namespace WebApp_Hospital.Controllers
                             int Id = Int32.Parse(dataReader["id"].ToString());
                             int PatientIdentification = Int32.Parse(dataReader["fk_patient_identification_card"].ToString());
                             string Patiend_name = dataReader["patient_name"].ToString();
-                            int DoctorIdentification = Int32.Parse(dataReader["doctor_code"].ToString());
-                            string Doctor_name = dataReader["doctor_name"].ToString();
-                            string Clinic_name = dataReader["clinic_name"].ToString();
-                            DateTime Date = (DateTime)dataReader["date_time"];
-                            string Speciality = dataReader["speciality"].ToString();
-                            string Diagnosis = dataReader["diagnosis_description"].ToString();
+                            string Allergy_name = dataReader["allergy_name"].ToString();
+                            string Allergy_description = dataReader["allergy_description"].ToString();
+                            DateTime Date = (DateTime)dataReader["diagnosis_date_time"];
+                            string Medicine = dataReader["medicine"].ToString();
 
-                            temp = new Appointment(Id, PatientIdentification, Patiend_name, DoctorIdentification, Doctor_name, Clinic_name, Date, Speciality, Diagnosis);
+                            temp = new Allergy(Id, PatientIdentification, Patiend_name, Allergy_name, Allergy_description, Date, Medicine);
                         }//while
                         connection.Close();
                     }
@@ -269,14 +264,14 @@ namespace WebApp_Hospital.Controllers
         //[HttpDelete]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(Appointment appointment) 
+        public async Task<IActionResult> Delete(Allergy allergy)
         {
             if (ModelState.IsValid)
             {
                 string connectionString = Configuration["ConnectionStrings:DB_Connection"];
                 var connection = new SqlConnection(connectionString);
 
-                string sqlQuery = $"exec deleteAppointment @appointment='{appointment.Id}'";
+                string sqlQuery = $"exec deletePatientAllergy @id='{allergy.Id}'";
                 using (SqlCommand command = new SqlCommand(sqlQuery, connection))
                 {
                     command.CommandType = CommandType.Text;
@@ -288,7 +283,8 @@ namespace WebApp_Hospital.Controllers
 
             ViewBag.Mensaje = "Successful";
 
-            return RedirectToAction("Index", "Patient");
+            return RedirectToAction("Index", new { id = allergy.Fk_patient_identification_card });
         }
+
     }
 }

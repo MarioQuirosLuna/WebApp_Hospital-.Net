@@ -1,13 +1,13 @@
-﻿@model WebApp_Hospital.Models.Vaccine
+﻿@model WebApp_Hospital.Models.Allergy
 
 @{
-    ViewData["Title"] = "DetailsVaccine";
+    ViewData["Title"] = "DetailsAllergy";
 }
 
 <h1>Details</h1>
 
 <div>
-    <h4>Vaccine</h4>
+    <h4>Allergy</h4>
     <hr />
 
     <table class="table">
@@ -20,24 +20,20 @@
             <td>@Html.DisplayFor(model => model.Patient_name)</td>
         </tr>
         <tr>
-            <th>Vaccine Name</th>
-            <td>@Html.DisplayFor(model => model.Vaccine_name)</td>
+            <th>Allergy Name</th>
+            <td>@Html.DisplayFor(model => model.Allergy_name)</td>
         </tr>
         <tr>
-            <th>Vaccine Description</th>
-            <td>@Html.DisplayFor(model => model.Vaccine_description)</td>
+            <th>Allergy Description</th>
+            <td>@Html.DisplayFor(model => model.Allergy_description)</td>
         </tr>
         <tr>
-            <th>Date</th>
-            <td>@Html.DisplayFor(model => model.Date_time)</td>
+            <th>Diagnosis Date</th>
+            <td>@Html.DisplayFor(model => model.Diagnosis_date_time)</td>
         </tr>
         <tr>
-            <th>Next Dose Date</th>
-            <td>@Html.DisplayFor(model => model.Next_dose_date_time)</td>
-        </tr>
-        <tr>
-            <th>Clinic Name</th>
-            <td>@Html.DisplayFor(model => model.Clinic_name)</td>
+            <th>Medicine</th>
+            <td>@Html.DisplayFor(model => model.Medicine)</td>
         </tr>
     </table>
 

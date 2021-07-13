@@ -47,6 +47,8 @@
     
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="Clinic_name" />
+        <input type="hidden" asp-for="Speciality" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
         <a asp-controller="Patient" asp-action="Index">Back to List</a>
     </form>
