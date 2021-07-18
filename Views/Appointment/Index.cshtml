@@ -4,19 +4,17 @@
     ViewData["Title"] = "IndexAppointment";
 }
 
-<h1>Index</h1>
+<h1>Appointment</h1>
 
 <p>
     <a asp-action="Create" asp-route-id="@ViewBag.IdPatient">Create New</a>
 </p>
-<table class="table">
-    <thead>
+<table class="table table-bordered border-primary align-content-center text-center">
+    <thead class="table-dark">
         <tr>
             <th>Patient Name</th>
-            <th>Doctor Name</th>
-            <th>Clinic Name</th>
             <th>Date</th>
-            <th>Speciality</th>
+            <th>Options</th>
         </tr>
     </thead>
     <tbody>
@@ -27,16 +25,7 @@
                     @Html.DisplayFor(modelItem => item.Patient_name)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Doctor_name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Clinic_name)
-                </td>
-                <td>
                     @Html.DisplayFor(modelItem => item.Date_time)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Speciality)
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
