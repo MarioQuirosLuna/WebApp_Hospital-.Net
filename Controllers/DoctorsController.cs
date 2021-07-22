@@ -56,7 +56,7 @@ namespace WebApp_Hospital.Controllers
                     connection.Close();
                 }
             }
-            return View("Login");
+            return RedirectToAction("Login");
             
         }
 
