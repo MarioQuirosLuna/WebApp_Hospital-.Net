@@ -27,7 +27,7 @@ namespace WebApp_Hospital.Models
         public string Speciality { get; set; }
         public string Diagnosis { get; set; }
 
-        public Appointment(int Id, int Fk_patient_identification_card, string Patient_name, int Doctor_code, string Doctor_name, string Clinic_name, DateTime Date_time, string Speciality, string Diagnosis) 
+        public Appointment(int Id, int Id_patient, int Fk_patient_identification_card, string Patient_name, int Doctor_code, string Doctor_name, string Clinic_name, DateTime Date_time, string Speciality, string Diagnosis) 
         {
             this.Id = Id;
             this.Id_patient = Id_patient;
@@ -40,7 +40,7 @@ namespace WebApp_Hospital.Models
             this.Speciality = Speciality;
             this.Diagnosis = Diagnosis;
         }
-        public Appointment(int Fk_patient_identification_card, string Patient_name) 
+        public Appointment(int Id_patient, int Fk_patient_identification_card, string Patient_name) 
         {
             this.Id_patient = Id_patient;
             this.Fk_patient_identification_card = Fk_patient_identification_card;

@@ -30,7 +30,7 @@ namespace WebApp_Hospital.Controllers
 
         //Login Doctor
         [HttpPost]
-        public IActionResult Verify(Doctor doctor) {
+        public IActionResult Login(Doctor doctor) {
 
             if (ModelState.IsValid)
             {
@@ -56,7 +56,8 @@ namespace WebApp_Hospital.Controllers
                     connection.Close();
                 }
             }
-            return RedirectToAction("Login");
+            ViewBag.ErrorLogin = "Incorrect ID, doctor code or password*";
+            return View();
             
         }
 

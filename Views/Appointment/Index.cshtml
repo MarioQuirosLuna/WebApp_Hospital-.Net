@@ -7,7 +7,7 @@
 <h1>Appointment</h1>
 
 <p>
-    <a asp-action="Create" asp-route-id="@ViewBag.IdPatient">Create New</a>
+    <a class="btn btn-outline-dark" asp-action="Create" asp-route-id="@ViewBag.IdPatient">Create New</a>
 </p>
 <table class="table table-bordered border-primary align-content-center text-center">
     <thead class="table-dark">
@@ -36,4 +36,8 @@
         }
     </tbody>
 </table>
+
+<div>
+    <a asp-controller="Patient" asp-action="Index">Back to List</a>
+</div>
 

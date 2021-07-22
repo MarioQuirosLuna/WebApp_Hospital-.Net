@@ -47,7 +47,7 @@ namespace WebApp_Hospital.Controllers
                             string Speciality = dataReader["speciality"].ToString();
                             string Diagnosis = dataReader["diagnosis_description"].ToString();
 
-                            appointments.Add(new Appointment(Id, PatientIdentification, Patiend_name, DoctorIdentification, Doctor_name, Clinic_name, Date, Speciality, Diagnosis));
+                            appointments.Add(new Appointment(Id, 0, PatientIdentification, Patiend_name, DoctorIdentification, Doctor_name, Clinic_name, Date, Speciality, Diagnosis));
                         }//while
                         connection.Close();
                     }
@@ -81,6 +81,7 @@ namespace WebApp_Hospital.Controllers
                         while (dataReader.Read())
                         {
                             int Id = Int32.Parse(dataReader["id"].ToString());
+                            int IdPatient = Int32.Parse(dataReader["id_Patient"].ToString());
                             int PatientIdentification = Int32.Parse(dataReader["fk_patient_identification_card"].ToString());
                             string Patiend_name = dataReader["patient_name"].ToString();
                             int DoctorIdentification = Int32.Parse(dataReader["doctor_code"].ToString());
@@ -90,7 +91,7 @@ namespace WebApp_Hospital.Controllers
                             string Speciality = dataReader["speciality"].ToString();
                             string Diagnosis = dataReader["diagnosis_description"].ToString();
 
-                            temp = new Appointment(Id, PatientIdentification, Patiend_name, DoctorIdentification, Doctor_name, Clinic_name, Date, Speciality, Diagnosis);
+                            temp = new Appointment(Id, IdPatient, PatientIdentification, Patiend_name, DoctorIdentification, Doctor_name, Clinic_name, Date, Speciality, Diagnosis);
                         }//while
                         connection.Close();
                     }
@@ -122,10 +123,11 @@ namespace WebApp_Hospital.Controllers
                         SqlDataReader dataReader = await command.ExecuteReaderAsync();
                         while (dataReader.Read())
                         {
+                            int patientID = Int32.Parse(dataReader["id"].ToString());
                             int PatientIdentification = Int32.Parse(dataReader["patient_identification_card"].ToString());
                             string Patiend_name = dataReader["patient_name"].ToString();
 
-                            temp = new Appointment(PatientIdentification, Patiend_name);
+                            temp = new Appointment(patientID, PatientIdentification, Patiend_name);
                         }//while
                         connection.Close();
                     }
@@ -142,6 +144,11 @@ namespace WebApp_Hospital.Controllers
             string dateCreate="";
             if (ModelState.IsValid)
             {
+                if (appointment.Year.Equals("Year") || appointment.Day.Equals("Day") || appointment.Month.Equals("Month") || appointment.Hour.Equals("Hour")) 
+                {
+                    ViewBag.ErrorDates = "Check the dates*";
+                    return View(appointment);
+                }
                 string connectionString = Configuration["ConnectionStrings:DB_Connection"];
                 var connection = new SqlConnection(connectionString);
 
@@ -155,11 +162,10 @@ namespace WebApp_Hospital.Controllers
                     await command.ExecuteReaderAsync();
                     connection.Close();
                 }
+                return RedirectToAction(nameof(Index), new { id = appointment.Id_patient});
             }
 
-            ViewBag.Mensaje = "Successful";
-
-            return RedirectToAction("Index", "Patient");
+            return View(appointment);
         }
 
         [HttpGet]
@@ -183,6 +189,7 @@ namespace WebApp_Hospital.Controllers
                         while (dataReader.Read())
                         {
                             int Id = Int32.Parse(dataReader["id"].ToString());
+                            int IdPatient = Int32.Parse(dataReader["id_Patient"].ToString());
                             int PatientIdentification = Int32.Parse(dataReader["fk_patient_identification_card"].ToString());
                             string Patiend_name = dataReader["patient_name"].ToString();
                             int DoctorIdentification = Int32.Parse(dataReader["doctor_code"].ToString());
@@ -192,7 +199,7 @@ namespace WebApp_Hospital.Controllers
                             string Speciality = dataReader["speciality"].ToString();
                             string Diagnosis = dataReader["diagnosis_description"].ToString();
 
-                            temp = new Appointment(Id, PatientIdentification, Patiend_name, DoctorIdentification, Doctor_name, Clinic_name, Date, Speciality, Diagnosis);
+                            temp = new Appointment(Id, IdPatient, PatientIdentification, Patiend_name, DoctorIdentification, Doctor_name, Clinic_name, Date, Speciality, Diagnosis);
                         }//while
                         connection.Close();
                     }
@@ -209,6 +216,12 @@ namespace WebApp_Hospital.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (appointment.Date_time > DateTime.Now) 
+                {
+                    ViewBag.Mensaje = "The appointment cannot be diagnosed yet*";
+                    return View(appointment);
+                }
+
                 string connectionString = Configuration["ConnectionStrings:DB_Connection"];
                 var connection = new SqlConnection(connectionString);
 
@@ -220,11 +233,10 @@ namespace WebApp_Hospital.Controllers
                     await command.ExecuteReaderAsync();
                     connection.Close();
                 }
+                return RedirectToAction(nameof(Index), new { id = appointment.Id_patient });
             }
-
-            ViewBag.Mensaje = "Successful";
-
-            return RedirectToAction("Index", "Patient");
+            return View(appointment);
+            
         }
 
         [HttpGet]
@@ -247,6 +259,7 @@ namespace WebApp_Hospital.Controllers
                         while (dataReader.Read())
                         {
                             int Id = Int32.Parse(dataReader["id"].ToString());
+                            int IdPatient = Int32.Parse(dataReader["id_Patient"].ToString());
                             int PatientIdentification = Int32.Parse(dataReader["fk_patient_identification_card"].ToString());
                             string Patiend_name = dataReader["patient_name"].ToString();
                             int DoctorIdentification = Int32.Parse(dataReader["doctor_code"].ToString());
@@ -256,7 +269,7 @@ namespace WebApp_Hospital.Controllers
                             string Speciality = dataReader["speciality"].ToString();
                             string Diagnosis = dataReader["diagnosis_description"].ToString();
 
-                            temp = new Appointment(Id, PatientIdentification, Patiend_name, DoctorIdentification, Doctor_name, Clinic_name, Date, Speciality, Diagnosis);
+                            temp = new Appointment(Id, IdPatient, PatientIdentification, Patiend_name, DoctorIdentification, Doctor_name, Clinic_name, Date, Speciality, Diagnosis);
                         }//while
                         connection.Close();
                     }
@@ -284,11 +297,10 @@ namespace WebApp_Hospital.Controllers
                     await command.ExecuteReaderAsync();
                     connection.Close();
                 }
+                return RedirectToAction(nameof(Index), new { id = appointment.Id_patient });
             }
 
-            ViewBag.Mensaje = "Successful";
-
-            return RedirectToAction("Index", "Patient");
+            return View();
         }
     }
 }
