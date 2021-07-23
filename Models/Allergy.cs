@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -18,6 +19,7 @@ namespace WebApp_Hospital.Models
         public string Year { get; set; }
         public string Month { get; set; }
         public string Day { get; set; }
+        [Required(ErrorMessage = "Medicine required*")]
         public string Medicine { get; set; }
 
         public Allergy(int Id, int Fk_patient_identification_card, string Patient_name, string Allergy_name, string Allergy_description, DateTime Diagnosis_date_time, string Medicine)

@@ -139,6 +139,12 @@ namespace WebApp_Hospital.Controllers
             string dateCreate = "";
             if (ModelState.IsValid)
             {
+                if (allergy.Year.Equals("Year") || allergy.Day.Equals("Day") || allergy.Month.Equals("Month"))
+                {
+                    ViewBag.ErrorDates = "Check the dates*";
+                    return View(allergy);
+                }
+
                 string connectionString = Configuration["ConnectionStrings:DB_Connection"];
                 var connection = new SqlConnection(connectionString);
 
@@ -152,11 +158,10 @@ namespace WebApp_Hospital.Controllers
                     await command.ExecuteReaderAsync();
                     connection.Close();
                 }
+                return RedirectToAction("Index", new { id = allergy.Fk_patient_identification_card });
             }
 
-            ViewBag.Mensaje = "Successful";
-
-            return RedirectToAction("Index", new { id = allergy.Fk_patient_identification_card });
+            return View(allergy);
         }
 
         [HttpGet]
@@ -205,6 +210,12 @@ namespace WebApp_Hospital.Controllers
             string dateCreate = "";
             if (ModelState.IsValid)
             {
+                if (allergy.Year.Equals("Year") || allergy.Day.Equals("Day") || allergy.Month.Equals("Month"))
+                {
+                    ViewBag.ErrorDates = "Check the dates*";
+                    return View(allergy);
+                }
+
                 string connectionString = Configuration["ConnectionStrings:DB_Connection"];
                 var connection = new SqlConnection(connectionString);
 
@@ -218,10 +229,11 @@ namespace WebApp_Hospital.Controllers
                     await command.ExecuteReaderAsync();
                     connection.Close();
                 }
+                return RedirectToAction("Details", new { id = allergy.Id });
             }
 
-            ViewBag.Mensaje = "Successful";
-            return RedirectToAction("Details", new { id = allergy.Id });
+            return View(allergy);
+
         }
 
         [HttpGet]

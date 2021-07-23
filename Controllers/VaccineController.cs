@@ -141,6 +141,12 @@ namespace WebApp_Hospital.Controllers
             string nextdateCreate = "";
             if (ModelState.IsValid)
             {
+                if (vaccine.Year.Equals("Year") || vaccine.Day.Equals("Day") || vaccine.Month.Equals("Month") || vaccine.NextYear.Equals("Year") || vaccine.NextDay.Equals("Day") || vaccine.NextMonth.Equals("Month"))
+                {
+                    ViewBag.ErrorDates = "Check the dates*";
+                    return View(vaccine);
+                }
+
                 string connectionString = Configuration["ConnectionStrings:DB_Connection"];
                 var connection = new SqlConnection(connectionString);
 
@@ -155,11 +161,10 @@ namespace WebApp_Hospital.Controllers
                     await command.ExecuteReaderAsync();
                     connection.Close();
                 }
+                return RedirectToAction(nameof(Index), new { id = vaccine.Fk_patient_identification_card });
             }
 
-            ViewBag.Mensaje = "Successful";
-
-            return RedirectToAction("Index", new { id = vaccine.Fk_patient_identification_card });
+            return View(vaccine);
         }
 
         [HttpGet]
@@ -210,6 +215,12 @@ namespace WebApp_Hospital.Controllers
             string nextdateCreate = "";
             if (ModelState.IsValid)
             {
+                if (vaccine.Year.Equals("Year") || vaccine.Day.Equals("Day") || vaccine.Month.Equals("Month") || vaccine.NextYear.Equals("NextYear") || vaccine.NextDay.Equals("NextDay") || vaccine.NextMonth.Equals("NextMonth"))
+                {
+                    ViewBag.ErrorDates = "Check the dates*";
+                    return View(vaccine);
+                }
+
                 string connectionString = Configuration["ConnectionStrings:DB_Connection"];
                 var connection = new SqlConnection(connectionString);
 
@@ -224,10 +235,11 @@ namespace WebApp_Hospital.Controllers
                     await command.ExecuteReaderAsync();
                     connection.Close();
                 }
+                return RedirectToAction("Details", new { id = vaccine.Id });
             }
 
-            ViewBag.Mensaje = "Successful";
-            return RedirectToAction("Details", new { id= vaccine.Id});
+            return View(vaccine);
+
         }
 
         [HttpGet]
@@ -286,11 +298,11 @@ namespace WebApp_Hospital.Controllers
                     await command.ExecuteReaderAsync();
                     connection.Close();
                 }
+
+                return RedirectToAction("Index", new { id = vaccine.Fk_patient_identification_card });
             }
 
-            ViewBag.Mensaje = "Successful";
-
-            return RedirectToAction("Index", new { id = vaccine.Fk_patient_identification_card });
+            return View();
         }
 
     }
